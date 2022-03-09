@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
-  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const response = await fetch("https://my-json-server.typicode.com/karolkproexe/jsonplaceholderdb/data");
   const users = await response.json();
   return users;
 });
@@ -18,6 +18,19 @@ const usersSlice = createSlice({
     },
     userUpdated(state, action) {
       const { id, name, email } = action.payload;
+      fetch('https://jsonplaceholder.typicode.com/posts/1', {
+        method: 'PUT',
+        body: JSON.stringify({
+          id,
+          name,
+          email,
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
+        .then((response) => response.json())
+        .then((json) => console.log(json));
       const existingUser = state.entities.find((user) => user.id === id);
       if (existingUser) {
         existingUser.name = name;
@@ -26,6 +39,9 @@ const usersSlice = createSlice({
     },
     userDeleted(state, action) {
       const { id } = action.payload;
+      fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
+       method: 'DELETE',
+      });
       const existingUser = state.entities.find((user) => user.id === id);
       if (existingUser) {
         state.entities = state.entities.filter((user) => user.id !== id);
