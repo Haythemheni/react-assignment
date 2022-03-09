@@ -1,6 +1,6 @@
 import { fetchUsers, userDeleted } from "./usersSlice";
 import { useDispatch, useSelector } from "react-redux";
-
+import {useState} from 'react'
 import { Link } from "react-router-dom";
 import "./styles.css"; 
 
@@ -9,11 +9,42 @@ export function UserList() {
 
   const { entities } = useSelector((state) => state.users);
   const loading = useSelector((state) => state.loading);
-
+  const [popup, setPopup] = useState({
+    show: false, // initial values set to false and null
+    id: null,
+  });
   const handleDelete = (id) => {
-  
-    dispatch(userDeleted({ id }));
+    dispatch(userDeleted({id}));
   };
+
+  const DeleteConfirmation = () => { 
+    return <div id="delete-confirmation" className="overlay">
+                    <div className="popup">
+                      <h2>Delete</h2>
+                      <a className="close"  onClick={()=> { 
+                           setPopup({
+                            show: false,
+                            id:null,
+                          });
+                        }} href="#">&times;</a>
+                      <div className="content">
+                        <hr/>
+                        <p>Are you sure you want to delete this user ?</p>
+                        <hr/>
+                        <div className="">
+                          <a className="button" onClick={()=> { 
+                           setPopup({
+                            show: false,
+                            id:null,
+                          });
+                        }} href="#">cancel</a>
+                          <a  className="button" onClick={() => handleDelete(popup.id)} href="#"> delete</a>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+  }
 
   return (
     <div className="container">
@@ -60,26 +91,16 @@ export function UserList() {
                       </Link>
                     </td>
                     <td>
-                        <a  className="button" href="#delete-confirmation">Delete </a>
+                        <a  className="button" onClick={()=> { 
+                           setPopup({
+                            show: true,
+                            id,
+                          });
+                        }} href="#delete-confirmation">Delete </a>
                       </td>                
                   </tr>
-                    <div id="delete-confirmation" className="overlay">
-                    <div className="popup">
-                      <h2>Delete</h2>
-                      <a className="close" href="#">&times;</a>
-                      <div className="content">
-                        <hr/>
-                        <p>Are you sure you want to delete this user ?</p>
-                        <hr/>
-                        <div className="">
-                          <a className=" button" href="#">cancel</a>
-                          <a  className="button" onClick={() => handleDelete(id)} href="#"> delete</a>
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-                  </>
+{ popup.show &&                    <DeleteConfirmation  />
+}                  </>
                 ))}
             </tbody>
           </table>

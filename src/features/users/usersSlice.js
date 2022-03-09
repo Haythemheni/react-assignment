@@ -55,6 +55,7 @@ const usersSlice = createSlice({
     },
     userDeleted(state, action) {
       const { id } = action.payload;
+      console.log("deleting number = ",id)
       fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
        method: 'DELETE',
       });
