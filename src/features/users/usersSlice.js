@@ -14,11 +14,27 @@ const usersSlice = createSlice({
   },
   reducers: {
     userAdded(state, action) {
+      const {name, email } = action.payload;
+
+      fetch('https://jsonplaceholder.typicode.com/users', {
+  method: 'POST',
+  body: JSON.stringify({
+    name,
+    email,
+    
+  }),
+  headers: {
+    'Content-type': 'application/json; charset=UTF-8',
+  },
+})
+  .then((response) => response.json())
+  .then((json) => console.log(json));
+
       state.entities.push(action.payload);
     },
     userUpdated(state, action) {
       const { id, name, email } = action.payload;
-      fetch('https://jsonplaceholder.typicode.com/posts/1', {
+      fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
         method: 'PUT',
         body: JSON.stringify({
           id,
